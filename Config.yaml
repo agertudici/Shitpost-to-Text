@@ -75,65 +75,6 @@ ocr:
   max_total_results: 8
 
 # ------------------------------
-# OCR Metadata Markup Config
-# ------------------------------
-# # Deprecated for now
-#
-# metadata_markup:
-#
-#   mediainfo:
-#     patterns:
-#       # size + type, e.g. "11 KB JPG", "1.5 MB PNG"
-#       - '\b\d+(?:\.\d+)?\s*(?:B|KB|MB|GB|TB)\s+[A-Za-z0-9]{2,5}\b'
-#       # size only, e.g. "11 KB", "1.25 MB"
-#       - '\b\d+(?:\.\d+)?\s*(?:B|KB|MB|GB|TB)\b'
-#       # type(size), e.g. "JPG(11 KB)", "PNG(1.5 MB)"
-#       - '\b[A-Za-z0-9]{2,5}\s*\(\d+(?:\.\d+)?\s*(?:B|KB|MB|GB|TB)\)\b'
-#
-#   engagement:
-#     likes:
-#       patterns:
-#         - '(?i)\b[A-Za-z]?\d+(?:\.\d+)?[Kk]?\s+likes\b'
-#     shares:
-#       patterns:
-#         - '(?i)\b[A-Za-z]?\d+(?:\.\d+)?[Kk]?\s+(?:reposts|retweets|shares|reblogs)\b'
-#     comments:
-#       patterns:
-#         - '(?i)\b[A-Za-z]?\d+(?:\.\d+)?[Kk]?\s+(?:comments|replies|quotes)\b'
-#     idnumber:
-#       patterns:
-#         - '^\d{6,}$'
-#
-#   author:
-#     patterns:
-#       - '@[A-Za-z0-9_\.]+'       # Twitter, Instagram, TikTok
-#       - 'u/[A-Za-z0-9_\.]+'      # Reddit-style
-#       - '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}' # Email
-#       - '\b[A-Za-z]+(?:[#\-_]?\d+)\b' # Word followed by digits, optionally separated by #, -, or _
-#       - '\b\d+(?:[#\-_]?[A-Za-z]+)\b' # Digits followed by word, optionally separated by #, -, or _
-#       - '\b[A-Za-z0-9_]+#[0-9]{3,5}\b'  # Full Discord-style with hash tag
-#
-#   platform:
-#     patterns:
-#       - 'Twitter|Bluesky|4chan|Instagram|Reddit'
-#       - '(?:bsky\.social|twitter\.com|reddit\.com)'
-#
-#   datetime:
-#     variants:
-#       absolute:
-#         patterns:
-#           - '\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},\s+\d{4}\s+at\s+\d{1,2}:\d{2}\s*(?:AM|PM)?\b'
-#           - '(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\s+at\s+\d{1,2}:\d{2}\s*(AM|PM)'
-#           - '\b(?:\d{1,2}/\d{1,2}/\d{2,4}\([A-Za-z]{3}\)\d{1,2}:\d{2}:\d{2}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},\s+\d{4}\s+at\s+\d{1,2}:\d{2}\s*(?:AM|PM)?|January|February|March|April|May|June|July|August|September|October|November|December\s+\d{1,2},\s+\d{4}\s+at\s+\d{1,2}:\d{2}\s*(?:AM|PM)?)\b'
-#       numeric:
-#         patterns:
-#           - '\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b'
-#           - '\d{1,2}/\d{1,2}/\d{2,4}\(.*?\)\d{2}:\d{2}:\d{2}'
-#       relative:
-#         patterns:
-#           - '\b\d+\s+(?:minute|hour|day|week|month|year)s?\s+ago\b'
-
-# ------------------------------
 # --- LLM OPTIONS ---
 # ------------------------------
 
