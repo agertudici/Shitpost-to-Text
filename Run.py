@@ -3,7 +3,7 @@
 # ------------------------------
 # ShitPost-to-Text
 # ------------------------------
-# This Version: rewrote step 3 to keep confidence variables needed for step 4
+# This Version: I'm done looking at this.
 
 import contextlib
 import os
