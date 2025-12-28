@@ -1,0 +1,148 @@
+# ------------------------------
+# --- CORE OPTIONS ---
+# ------------------------------
+
+paths:
+  sptt_root: "./"  # relative to this config file
+  target_dir: "test"
+  temp_folder: "_tmp"
+  dict_paths:
+    - "/usr/share/dict/words"
+    - "./custom.txt"
+
+extensions:
+  image: [".jpg", ".jpeg", ".png", ".webp", ".gif", ".mp4"]
+
+options:
+  fallback_counter: 1
+  min_word_len: 3
+
+filename_filters:
+  whitelist: ["waifu"] # for the degenerates out there
+  blacklist: ["screenshot", "preview", "firefox", "chrome", "snippingtool", "boost", "lite"]
+
+# ------------------------------
+# --- OCR OPTIONS ---
+# ------------------------------
+# These have been tuned to the test folder, which is a broad sample of sources.
+# The PSM settings detect the layout. The versions are different filters applied to the image to enhance various possible elements.
+# All enabled PSMs are tested on whichever versions are enabled as the "first pass" (marked with a 1).
+# The best PSM is selected by weighting the confidence tesseract calculates in the lines against how many words it detects from the supplied dictionary.
+# That PSM is run on the remaining enabled versions (marked with a 2)
+# The versions marked 0 are completely disabled.
+
+ocr:
+  enabled_psms:
+    0: false   # Orientation and script detection (OSD only, no OCR)
+    1: true    # Automatic page segmentation with OSD (general-purpose, strong default)
+    2: false   # Automatic segmentation, no OSD or OCR (not implemented / broken)
+    3: true    # Fully automatic page segmentation (no OSD; very reliable)
+    4: true    # Assume single column of text (excellent for screenshots & memes)
+    5: false   # Assume single uniform block of vertically aligned text (rarely useful)
+    6: true    # Assume single uniform block of text (best for clean caption blocks)
+    7: false   # Treat image as a single text line (too brittle for general use)
+    8: false   # Treat image as a single word (only useful for labels / icons)
+    9: false   # Treat image as a single word in a circle (very niche)
+    10: false  # Treat image as a single character (almost never useful)
+    11: true   # Sparse text, find as much as possible (great for memes / posters)
+    12: false   # Sparse text with OSD (similar to 11; sometimes slightly better)
+    13: false  # Raw line recognition (debug / research only)
+    14: false  # Treat image as single text line with OSD (niche)
+    15: false  # Sparse text + OSD + vertical text (mostly signage)
+    16: false  # Sparse text, no OSD, no orientation (edge-case signage)
+
+  enabled_versions:
+    # 0 = disabled
+    # 1 = First-Pass Versions: all of these are run and processed under all enabled PSMs
+    # 2 = Second-Pass Versions - the rest of these are run and processed only by the PSM that scored the highest on the first 3
+    original: 1        # Baseline reference; never disable
+    grayscale: 1       # Removes color noise; almost always helps
+    autocontrast: 1    # Expands dynamic range; great for memes/screenshots
+    resize_2x: 2       # Increases character resolution (critical for small text)
+    resize_2x_autocontrast: 2  # Strong combo for low-res screenshots
+    denoise_median: 2  # Removes salt-and-pepper noise without killing edges
+    adaptive_threshold: 0
+      # Converts to black/white using local contrast, Excellent for high-contrast text, terrible for photos (hence optional)
+    deskew: 2
+      # Corrects rotation from scans / crooked photos Safe because it’s cheap and fails gracefully
+    transparency_white_bg: 2
+    transparency_black_bg: 0
+      # RGBA images get flattened onto solid backgrounds
+      # White almost always wins; black is niche but occasionally useful
+
+  confidence_floor: 50 # how picky the the script will be about considering the OCR to be a success and passing it on to the next steps.
+  max_results_per_psm: 4
+  max_total_results: 8
+
+# ------------------------------
+# OCR Metadata Markup Config
+# ------------------------------
+# # Deprecated for now
+#
+# metadata_markup:
+#
+#   mediainfo:
+#     patterns:
+#       # size + type, e.g. "11 KB JPG", "1.5 MB PNG"
+#       - '\b\d+(?:\.\d+)?\s*(?:B|KB|MB|GB|TB)\s+[A-Za-z0-9]{2,5}\b'
+#       # size only, e.g. "11 KB", "1.25 MB"
+#       - '\b\d+(?:\.\d+)?\s*(?:B|KB|MB|GB|TB)\b'
+#       # type(size), e.g. "JPG(11 KB)", "PNG(1.5 MB)"
+#       - '\b[A-Za-z0-9]{2,5}\s*\(\d+(?:\.\d+)?\s*(?:B|KB|MB|GB|TB)\)\b'
+#
+#   engagement:
+#     likes:
+#       patterns:
+#         - '(?i)\b[A-Za-z]?\d+(?:\.\d+)?[Kk]?\s+likes\b'
+#     shares:
+#       patterns:
+#         - '(?i)\b[A-Za-z]?\d+(?:\.\d+)?[Kk]?\s+(?:reposts|retweets|shares|reblogs)\b'
+#     comments:
+#       patterns:
+#         - '(?i)\b[A-Za-z]?\d+(?:\.\d+)?[Kk]?\s+(?:comments|replies|quotes)\b'
+#     idnumber:
+#       patterns:
+#         - '^\d{6,}$'
+#
+#   author:
+#     patterns:
+#       - '@[A-Za-z0-9_\.]+'       # Twitter, Instagram, TikTok
+#       - 'u/[A-Za-z0-9_\.]+'      # Reddit-style
+#       - '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}' # Email
+#       - '\b[A-Za-z]+(?:[#\-_]?\d+)\b' # Word followed by digits, optionally separated by #, -, or _
+#       - '\b\d+(?:[#\-_]?[A-Za-z]+)\b' # Digits followed by word, optionally separated by #, -, or _
+#       - '\b[A-Za-z0-9_]+#[0-9]{3,5}\b'  # Full Discord-style with hash tag
+#
+#   platform:
+#     patterns:
+#       - 'Twitter|Bluesky|4chan|Instagram|Reddit'
+#       - '(?:bsky\.social|twitter\.com|reddit\.com)'
+#
+#   datetime:
+#     variants:
+#       absolute:
+#         patterns:
+#           - '\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},\s+\d{4}\s+at\s+\d{1,2}:\d{2}\s*(?:AM|PM)?\b'
+#           - '(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\s+at\s+\d{1,2}:\d{2}\s*(AM|PM)'
+#           - '\b(?:\d{1,2}/\d{1,2}/\d{2,4}\([A-Za-z]{3}\)\d{1,2}:\d{2}:\d{2}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},\s+\d{4}\s+at\s+\d{1,2}:\d{2}\s*(?:AM|PM)?|January|February|March|April|May|June|July|August|September|October|November|December\s+\d{1,2},\s+\d{4}\s+at\s+\d{1,2}:\d{2}\s*(?:AM|PM)?)\b'
+#       numeric:
+#         patterns:
+#           - '\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b'
+#           - '\d{1,2}/\d{1,2}/\d{2,4}\(.*?\)\d{2}:\d{2}:\d{2}'
+#       relative:
+#         patterns:
+#           - '\b\d+\s+(?:minute|hour|day|week|month|year)s?\s+ago\b'
+
+# ------------------------------
+# --- LLM OPTIONS ---
+# ------------------------------
+
+llm_options:
+  llm_model: gemma2:2b
+  ocr_cleanup: |
+    Focus on OCR-generated text from social media posts, memes, and internet content. Remove most social media background data such as timestamps, likes, or reposts, only keeping names. Remove most non-alphanumeric characters. Correct OCR mistakes and normalize punctuation and whitespace. Remove newlines that cut words or sentences, but keep ones that organize lists, long-form text, or chat-style transcripts. Create full sentences or at least sentence fragments/statements that clearly communicate a concept. Make the text coherent for use with a screen reader. Act as an editor and return only the edited text without commentary.
+  llm_tagging: | # this is a list of reference tags it will use to attempt to categorize the outputs. This can be added to / customized if your set includes specific media, topics, etc.
+    humor, joke, satire, parody, meme, relatable, reaction, story, opinion, advice, warning, question, observation, funny, sad, ironic, absurd, shocking, cute, wholesome, frustrated, angry, happy, surprised, nostalgic, adult, teen, child, parent, friend, stranger, celebrity, character, fictional, food, drink, clothing, toy, vehicle, animal, device, book, artwork, plant, tool, working, sleeping, partying, shopping, studying, reading, writing, gaming, exercising, relaxing, politics, religion, gender, relationships, family, school, work, technology, social_media, gaming, music, movies, art, literature, history, health, science, self, group, online, offline, subculture, fandom, community, slang, profanity, allcaps, misspelling, emoji, hashtag, quotation, repetition, question, statement, nsfw, violent, sexual, harassment, hate, sensitive, offensive
+  llm_titleing: |
+    Return ONLY a 3–5 word title that summarizes the semantic content of this text.
+    No punctuation, no explanations, no extra text.
