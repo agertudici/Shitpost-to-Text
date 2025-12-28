@@ -2,6 +2,8 @@
 from pathlib import Path
 import shutil
 
+# --- Will easily / quickly reset a folder of test items from ./testbackup to ./test
+
 # --- Configuration ---
 SOURCE_DIR = Path.home() / "SPTT/testbackup"
 TARGET_DIR = Path.home() / "SPTT/test"
