@@ -1,6 +1,6 @@
 # ShitPost-to-Text (SPTT)
 
-This script converts OCR text from social media posts, memes, and internet content into clean, readable text suitable for screen readers. It handles preprocessing, OCR, deduplication, LLM cleanup, tagging, file renaming, and metadata embedding.
+This script converts OCR text from social media posts, memes, and internet content into clean, readable text suitable for screen readers. It handles preprocessing, OCR, deduplication, LLM cleanup, tagging, file renaming, and metadata embedding. Basically it'll semi-intelligently OCR your folder full of 10 year old screenshots of shitposts. Semi configurable if you wanna try to tweak it to a specific use-case. I can't believe I spent three weeks vibe coding this but it exists now. Do whatever you want with it.
 
 ---
 
